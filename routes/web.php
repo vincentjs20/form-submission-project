@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\ApprovalController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,7 +19,7 @@ use App\Http\Controllers\AdminController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth/login');
 });
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -29,6 +32,14 @@ Route::middleware(['auth', 'role:user'])->group(function () {
 });
 
 // Rute untuk admin
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+// });
+
+Route::get('/submission/form', [SubmissionController::class, 'createForm'])->name('submission.form');
+Route::post('/submission/submit', [SubmissionController::class, 'submitForm']);
 Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    // Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/dashboard', [SubmissionController::class, 'index'])->name('admin.dashboard');
+    Route::post('/submission/approve/{id}', [SubmissionController::class, 'approve'])->name('submission.approve');
 });
